@@ -33,7 +33,6 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public TransactionDTO save(TransactionDTO transactionDTO) {
-        transactionDTO.setId(null);
         Transaction transaction = transactionMapper.toEntity(transactionDTO);
         if (transaction.getDate().isAfter(OffsetDateTime.now())) {
             throw new ResponseStatusException(HttpStatusCode.valueOf(HttpStatus.UNPROCESSABLE_ENTITY.value()));
@@ -71,6 +70,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         List<Transaction> recentTransactions = transactions.stream().filter(t -> t.getDate().isBefore(OffsetDateTime.now().minusSeconds(60))).toList();
         if (recentTransactions.isEmpty()) {
+            System.out.println("Lista não vazia?" + "recentes: "+recentTransactions + " todas: " + transactions);
+
             return Statistics.empty();
         }
         System.out.println("Lista não vazia?" + "recentes: "+recentTransactions + " todas: " + transactions);
